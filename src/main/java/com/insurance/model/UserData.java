@@ -20,6 +20,7 @@ public @Data class UserData {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "user_id")
 	private int userId;
 	
 	@Column
@@ -38,6 +39,10 @@ public @Data class UserData {
 	
 	public UserData() {}
 
+	public UserData(int id) {
+		super();
+		this.userId = id;
+	}
 	public UserData(int id, String fullName, String mobileNo, int age, String occupation, String familyBackground,
 			File kYC, String healthCondition, String vehicleData, LocalDateTime registeredDate,
 			LocalDateTime updatedDate, String tempAddress, String permenantAddress) {

@@ -14,7 +14,10 @@ import com.insurance.repository.UserRepository;
 import com.insurance.util.Response;
 import com.insurance.util.TokenUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserService implements IUserService{
 
 	@Autowired
@@ -26,54 +29,66 @@ public class UserService implements IUserService{
 	@Autowired
 	private TokenUtil tokenUtil;
 
+	//Returns all user data present
 	@Override
 	public List<UserData> getAllUsers(String token) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<UserData> isPresent = userRepository.findById(id);
 		if(isPresent.isPresent()) {
+			log.info("Get All User Data");
 			List<UserData> getAllUsers = userRepository.findAll();
 			return getAllUsers;
 		}else {
-			throw new UserInsuranceException(400, "Token is not Valid");
+			log.error("User Token Is Not valid");
+			throw new UserInsuranceException(400, "User Token Is Not Valid");
 		}	
 	}
 
+	//Adds a new user data
 	@Override
 	public Response addUser(UserDTO userDTO) {
 		Optional<UserData> isPresent = userRepository.findByMobileNo(userDTO.getMobileNo());
 		if(isPresent.isPresent()) {
-			throw new UserInsuranceException(400, "Contact Already Added");
+			log.error("User Already Added");
+			throw new UserInsuranceException(400, "User Already Added");
 		}else {
+			log.info("Add User : " + userDTO);
 			UserData user = modelmapper.map(userDTO, UserData.class);
 			userRepository.save(user);
 			String token = tokenUtil.createToken(user.getUserId());
-			return new Response(200, "Contact Added Successfully", token);
+			return new Response(200, "User Data Added Successfully", token);
 		}	
 	}
 
+	//Updates an existing user data
 	@Override
 	public Response updateUser(String token, UserDTO userDTO) {
 		
 		int id = tokenUtil.decodeToken(token);
 		Optional<UserData> isPresent = userRepository.findById(id);
 		if(isPresent.isPresent()) {
+			log.info("Update User : " + userDTO);
 			isPresent.get().updateUser(userDTO);
 			userRepository.save(isPresent.get());
-			return new Response(200, "Contact Updated Successfully", token);
+			return new Response(200, "User Data Updated Successfully", token);
 		}else {
-			throw new UserInsuranceException(400, "Contact Doesnt Exist");
+			log.error("User Doesnt Exist");
+			throw new UserInsuranceException(400, "User Doesnt Exist");
 		}	
 	}
 
+	//Deletes an existing user data
 	@Override
 	public Response deleteUser(String token) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<UserData> isPresent = userRepository.findById(id);
 		if(isPresent.isPresent()) {
+			log.info("User Data Deleted");
 			userRepository.delete(isPresent.get());
-			return new Response(200, "Contact Deleted Successfully", token);
+			return new Response(200, "User Data Deleted Successfully", token);
 		}else {
-			throw new UserInsuranceException(400, "Token is not Valid");
+			log.error("User Token Is Not Valid");
+			throw new UserInsuranceException(400, "User Token Is Not Valid");
 		}
 	}
 }

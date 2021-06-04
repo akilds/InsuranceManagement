@@ -18,7 +18,8 @@ import lombok.Data;
 public @Data class InsuranceCategoryData {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "insurance_id")
 	private int insuranceId;
 	
 	@Column
@@ -30,6 +31,10 @@ public @Data class InsuranceCategoryData {
 	private LocalDateTime insuranceUpdatedDate = LocalDateTime.now();
 	
 	public InsuranceCategoryData() {}
+	
+	public InsuranceCategoryData(int id) {
+		this.insuranceId = id;
+	}
 	
 	public InsuranceCategoryData(int id, String insuranceName, String insuranceStatus, String insuranceScheme,
 			Long insuranceCode, LocalDateTime registeredDate, LocalDateTime updatedDate) {

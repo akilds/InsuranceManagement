@@ -22,35 +22,47 @@ import com.insurance.model.InsuranceCategoryData;
 import com.insurance.service.IInsuranceCategoryService;
 import com.insurance.util.Response;
 
+import lombok.extern.slf4j.Slf4j;
+
+
 @RestController
 @RequestMapping("/insurance")
+@Slf4j
 public class InsuranceCategoryController {
 
 	@Autowired
 	private IInsuranceCategoryService insuranceservice;
 	
+	//Returns all the insurance data present
 	@GetMapping("/getallinsurance/{token}")
 	public ResponseEntity<List<?>> getAllInsurance(@PathVariable String token) {
+		log.info("Get All Insurance Data");
 		List<InsuranceCategoryData> response = insuranceservice.getAllInsurance(token);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
+	//Creates a new insurance data
 	@PostMapping("/addnewinsurance")
 	public ResponseEntity<Response> createInsurance(@Valid @RequestBody InsuranceDTO insuranceDTO) {
+		log.info("Create Insurance : " + insuranceDTO);
 		Response response  = insuranceservice.addInsurance(insuranceDTO);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
+	//Updates an existing insurance data
 	@PutMapping("/updateinsurance/{token}")
 	public ResponseEntity<Response> updateInsurance(@PathVariable String token,
-												  @Valid @RequestBody InsuranceDTO userDTO) {
-		Response response  = insuranceservice.updateInsurance(token, userDTO);
+												  @Valid @RequestBody InsuranceDTO insuranceDTO) {
+		log.info("Update User : " + insuranceDTO);
+		Response response  = insuranceservice.updateInsurance(token, insuranceDTO);
 		return new ResponseEntity<Response>(response, HttpStatus
 				.OK);
 	}
 	
+	//Deletes an existing insurance data
 	@DeleteMapping("/deleteinsurance")
 	public ResponseEntity<Response> deleteInsurance(@RequestParam String token) {
+		log.info("Deleted Insurance Data");
 		Response response  = insuranceservice.deleteInsurance(token);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
