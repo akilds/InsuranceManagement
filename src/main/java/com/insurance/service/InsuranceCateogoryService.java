@@ -1,5 +1,7 @@
 package com.insurance.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +46,41 @@ public class InsuranceCateogoryService implements IInsuranceCategoryService{
 		}	
 	}
 
+	//Returns all the insurance data for id
+	@Override
+	public List<InsuranceCategoryData> getAllInsuranceWithParticularCategory(String token) {
+		int id = tokenUtil.decodeToken(token);
+		Optional<InsuranceCategoryData> isPresent = insuranceRepository.findById(id);
+		if(isPresent.isPresent()) {
+			log.info("Get All Insurance Data Fot id");
+			List<InsuranceCategoryData> getAllInsurance = insuranceRepository.findAllByInsuranceId(id);
+			return getAllInsurance;
+		}else {
+			log.error("Insurance Token Is Not Valid");
+			throw new UserInsuranceException(400, "Insurance Token Is Not Valid");
+		}	
+	}
+		
+	//Returns all the insurance data between dates
+	@Override
+	public List<InsuranceCategoryData> getAllInsuranceBetweenDates(String token,
+																   String date1,
+																   String date2) {
+		int id = tokenUtil.decodeToken(token);
+		Optional<InsuranceCategoryData> isPresent = insuranceRepository.findById(id);
+		if(isPresent.isPresent()) {
+			log.info("Get All Insurance Data Between Dates");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); 
+			LocalDateTime start = LocalDateTime.parse(date1, formatter);
+			LocalDateTime end = LocalDateTime.parse(date2, formatter);
+			List<InsuranceCategoryData> getAllInsurance = insuranceRepository.findAllInsuranceBetweenDates(start,end);
+			return getAllInsurance;
+		}else {
+			log.error("Insurance Token Is Not Valid");
+			throw new UserInsuranceException(400, "Insurance Token Is Not Valid");
+		}	
+	}
+	
 	//Adds a new insurance data
 	@Override
 	public Response addInsurance(InsuranceDTO insuranceDTO) {

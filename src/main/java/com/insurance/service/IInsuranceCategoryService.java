@@ -15,4 +15,8 @@ public interface IInsuranceCategoryService {
 	List<InsuranceCategoryData> getAllInsurance(String token);
 
 	Response deleteInsurance(String token);
+
+	List<InsuranceCategoryData> getAllInsuranceWithParticularCategory(String token);
+
+	List<InsuranceCategoryData> getAllInsuranceBetweenDates(String token, String date1, String date2);
 }

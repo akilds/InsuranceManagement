@@ -85,6 +85,20 @@ public class InsuranceCreateService implements IInsuranceCreateService{
 		}	
 	}
 	
+	//Returns all the data based on claimed insurance
+	@Override
+	public List<?> getAllClaimedInsurance(String token) {
+		int id = tokenUtil.decodeToken(token);
+		Optional<InsuranceCreateData> isPresent = insuranceRepository.findById(id);
+		if(isPresent.isPresent()) {
+			log.info("Get All Claimed Insurance Data");
+			return insuranceRepository.findAllClaimedInsuranceData(true);
+		}else {
+			log.error("Insurance Create Token Is Not Valid");
+			throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid");
+		}	
+	}
+	
 	//Adds new insurance create data
 	@Override
 	public Response addInsurance(InsuranceCreateDTO insuranceDTO) {

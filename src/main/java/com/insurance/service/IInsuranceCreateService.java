@@ -20,4 +20,6 @@ public interface IInsuranceCreateService {
 	List<?> getAllByMonthPeriod(int monthPeriod, String token);
 	
 	List<?> getAllInsuranceForUser(String fullName, String token);
+
+	List<?> getAllClaimedInsurance(String token);
 }

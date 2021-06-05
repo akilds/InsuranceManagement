@@ -31,7 +31,7 @@ public class InsuranceCreateController {
 	@Autowired
 	private IInsuranceCreateService insuranceservice;
 	
-	//Returns all the insurance data present
+	//Returns all the data present
 	@GetMapping("/getallinsurance/{token}")
 	public ResponseEntity<List<?>> getAllInsurance(@PathVariable String token) {
 		log.info("Get All Insurance Create Data");
@@ -66,6 +66,14 @@ public class InsuranceCreateController {
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
+	//Returns all data based on claimed insurance
+	@GetMapping("/getallclaimedinsurance/{token}")
+	public ResponseEntity<List<?>> getAllClaimedInsurance(@PathVariable String token) {
+		log.info("Get Data Based On Claimed Insurance");
+		List<?> response = insuranceservice.getAllClaimedInsurance(token);
+		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
+	}
+		
 	//Creates a new insurance create data
 	@PostMapping("/addnewinsurance")
 	public ResponseEntity<Response> createInsurance(@Valid @RequestBody InsuranceCreateDTO insuranceDTO) {

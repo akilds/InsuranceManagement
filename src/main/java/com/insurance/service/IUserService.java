@@ -16,4 +16,10 @@ public interface IUserService {
 
 	Response deleteUser(String token);
 
+	List<UserData> getAllUserBetweenRegisteredDate(String token, String date1, String date2);
+
+	List<UserData> getAllUserWithHealthCondition(String token, String healthCondition);
+
+	List<UserData> getAllUserWithVehicleData(String token, String vehicleData);
+
 }
