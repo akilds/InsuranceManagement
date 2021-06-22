@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.insurance.model.InsuranceCategoryData;
-import com.insurance.model.UserData;
+import com.insurance.model.UserRegistrationData;
 
 import lombok.Data;
 import lombok.ToString;
@@ -12,7 +12,7 @@ import lombok.ToString;
 @Data
 public @ToString class InsuranceCreateDTO {
 	
-	public UserData userCid;
+	public UserRegistrationData userCid;
 	
 	public InsuranceCategoryData insuranceCid;
 	

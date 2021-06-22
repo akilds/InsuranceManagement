@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserExceptionHandler {
 
-private static final String message = "Exception while processing REST Request";
+	private static final String message = "Exception while processing REST Request";
 	
 	private static final int errorCode = 400;
 	

@@ -33,31 +33,31 @@ public class InsuranceCateogoryService implements IInsuranceCategoryService{
 
 	//Returns all the insurance data
 	@Override
-	public List<InsuranceCategoryData> getAllInsurance(String token) {
+	public List<InsuranceCategoryData> getAllInsurance(String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCategoryData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent()) {
+		if(isPresent.isPresent() && access.equals("admin")) {
 			log.info("Get All Insurance Data");
 			List<InsuranceCategoryData> getAllInsurance = insuranceRepository.findAll();
 			return getAllInsurance;
 		}else {
-			log.error("Insurance Token Is Not Valid");
-			throw new UserInsuranceException(400, "Insurance Token Is Not Valid");
+			log.error("Insurance Token Is Not Valid/Not Authorised");
+			throw new UserInsuranceException(400, "Insurance Token Is Not Valid/Not Authorised");
 		}	
 	}
 
 	//Returns all the insurance data for id
 	@Override
-	public List<InsuranceCategoryData> getAllInsuranceWithParticularCategory(String token) {
+	public List<InsuranceCategoryData> getAllInsuranceWithParticularCategory(String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCategoryData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent()) {
+		if(isPresent.isPresent() && access.equals("admin")) {
 			log.info("Get All Insurance Data Fot id");
 			List<InsuranceCategoryData> getAllInsurance = insuranceRepository.findAllByInsuranceId(id);
 			return getAllInsurance;
 		}else {
-			log.error("Insurance Token Is Not Valid");
-			throw new UserInsuranceException(400, "Insurance Token Is Not Valid");
+			log.error("Insurance Token Is Not Valid/Not Authorised");
+			throw new UserInsuranceException(400, "Insurance Token Is Not Valid/Not Authorised");
 		}	
 	}
 		
@@ -65,10 +65,11 @@ public class InsuranceCateogoryService implements IInsuranceCategoryService{
 	@Override
 	public List<InsuranceCategoryData> getAllInsuranceBetweenDates(String token,
 																   String date1,
-																   String date2) {
+																   String date2,
+																   String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCategoryData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent()) {
+		if(isPresent.isPresent() && access.equals("admin")) {
 			log.info("Get All Insurance Data Between Dates");
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); 
 			LocalDateTime start = LocalDateTime.parse(date1, formatter);
@@ -76,18 +77,18 @@ public class InsuranceCateogoryService implements IInsuranceCategoryService{
 			List<InsuranceCategoryData> getAllInsurance = insuranceRepository.findAllInsuranceBetweenDates(start,end);
 			return getAllInsurance;
 		}else {
-			log.error("Insurance Token Is Not Valid");
-			throw new UserInsuranceException(400, "Insurance Token Is Not Valid");
+			log.error("Insurance Token Is Not Valid/Not Authorised");
+			throw new UserInsuranceException(400, "Insurance Token Is Not Valid/Not Authorised");
 		}	
 	}
 	
 	//Adds a new insurance data
 	@Override
-	public Response addInsurance(InsuranceDTO insuranceDTO) {
+	public Response addInsurance(InsuranceDTO insuranceDTO, String access) {
 		Optional<InsuranceCategoryData> isPresent = insuranceRepository.findByInsuranceCode(insuranceDTO.getInsuranceCode());
-		if(isPresent.isPresent()) {
-			log.error("Insurance Data Already Added");
-			throw new UserInsuranceException(400, "Insurance Data Already Added");
+		if(isPresent.isPresent() && !access.equals("admin")) {
+			log.error("Insurance Data Already Added/Not Authorised");
+			throw new UserInsuranceException(400, "Insurance Data Already Added/Not Authorised");
 		}else {
 			log.info("Insurance Data Added : " + insuranceDTO);
 			InsuranceCategoryData user = modelmapper.map(insuranceDTO, InsuranceCategoryData.class);
@@ -99,11 +100,11 @@ public class InsuranceCateogoryService implements IInsuranceCategoryService{
 
 	//Updates an existing insurance data
 	@Override
-	public Response updateInsurance(String token, InsuranceDTO insuranceDTO) {
+	public Response updateInsurance(String token, InsuranceDTO insuranceDTO, String access) {
 		
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCategoryData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent()) {
+		if(isPresent.isPresent() && access.equals("admin")) {
 			log.info("Insurance Data Updated : " + insuranceDTO);
 			isPresent.get().updateInsurance(insuranceDTO);
 			insuranceRepository.save(isPresent.get());
@@ -116,16 +117,16 @@ public class InsuranceCateogoryService implements IInsuranceCategoryService{
 
 	//Deletes an existing insurance data
 	@Override
-	public Response deleteInsurance(String token) {
+	public Response deleteInsurance(String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCategoryData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent()) {
+		if(isPresent.isPresent() && access.equals("admin")) {
 			log.info("Insurance Data Deleted Successfully");
 			insuranceRepository.delete(isPresent.get());
 			return new Response(200, "Insurance Data Deleted Successfully", token);
 		}else {
-			log.error("Insurance Token Is Not Valid");
-			throw new UserInsuranceException(400, "Insurance Token Is Not Valid");
+			log.error("Insurance Token Is Not Valid/Not Authorised");
+			throw new UserInsuranceException(400, "Insurance Token Is Not Valid/Not Authorised");
 		}
 	}
 

@@ -32,71 +32,79 @@ public class InsuranceCreateController {
 	private IInsuranceCreateService insuranceservice;
 	
 	//Returns all the data present
-	@GetMapping("/getallinsurance/{token}")
-	public ResponseEntity<List<?>> getAllInsurance(@PathVariable String token) {
+	@GetMapping("/getallinsurance/{access}")
+	public ResponseEntity<List<?>> getAllInsurance(@RequestParam String token,
+													@PathVariable String access) {
 		log.info("Get All Insurance Create Data");
-		List<?> response = insuranceservice.getAllInsurance(token);
+		List<?> response = insuranceservice.getAllInsurance(token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Returns all data based on status
-	@GetMapping("/getallinsurancebystatus/{token}")
-	public ResponseEntity<List<?>> getAllByStatus(@PathVariable String token,
-												  @RequestParam String status) {
+	@GetMapping("/getallinsurancebystatus/{access}")
+	public ResponseEntity<List<?>> getAllByStatus(@RequestParam String token,
+												  @RequestParam String status,
+												  @PathVariable String access) {
 		log.info("Get Data Based On Status");
-		List<?> response = insuranceservice.getAllByStatus(status,token);
+		List<?> response = insuranceservice.getAllByStatus(status,token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Returns all data based on monthPeriod
-	@GetMapping("/getallinsurancebymonthperiod/{token}")
-	public ResponseEntity<List<?>> getAllByMonthPeriod(@PathVariable String token,
-													   @RequestParam int monthPeriod) {
+	@GetMapping("/getallinsurancebymonthperiod/{access}")
+	public ResponseEntity<List<?>> getAllByMonthPeriod(@RequestParam String token,
+													   @RequestParam int monthPeriod,
+													   @PathVariable String access) {
 		log.info("Get Data Based On Month Period");
-		List<?> response = insuranceservice.getAllByMonthPeriod(monthPeriod,token);
+		List<?> response = insuranceservice.getAllByMonthPeriod(monthPeriod,token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Returns all data based on fullName
-	@GetMapping("/getallinsuranceforuser/{token}")
-	public ResponseEntity<List<?>> getAllInsuranceForUser(@PathVariable String token,
-														  @RequestParam String name) {
+	@GetMapping("/getallinsuranceforuser/{access}")
+	public ResponseEntity<List<?>> getAllInsuranceForUser(@RequestParam String token,
+														  @RequestParam String name,
+														  @PathVariable String access) {
 		log.info("Get Data Based On First Name");
-		List<?> response = insuranceservice.getAllInsuranceForUser(name,token);
+		List<?> response = insuranceservice.getAllInsuranceForUser(name,token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Returns all data based on claimed insurance
-	@GetMapping("/getallclaimedinsurance/{token}")
-	public ResponseEntity<List<?>> getAllClaimedInsurance(@PathVariable String token) {
+	@GetMapping("/getallclaimedinsurance/{access}")
+	public ResponseEntity<List<?>> getAllClaimedInsurance(@RequestParam String token,
+														  @PathVariable String access) {
 		log.info("Get Data Based On Claimed Insurance");
-		List<?> response = insuranceservice.getAllClaimedInsurance(token);
+		List<?> response = insuranceservice.getAllClaimedInsurance(token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 		
 	//Creates a new insurance create data
-	@PostMapping("/addnewinsurance")
-	public ResponseEntity<Response> createInsurance(@Valid @RequestBody InsuranceCreateDTO insuranceDTO) {
+	@PostMapping("/addnewinsurance/{access}")
+	public ResponseEntity<Response> createInsurance(@Valid @RequestBody InsuranceCreateDTO insuranceDTO,
+													@PathVariable String access) {
 		log.info("Create Insurance : " + insuranceDTO);
-		Response response  = insuranceservice.addInsurance(insuranceDTO);
+		Response response  = insuranceservice.addInsurance(insuranceDTO,access);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
 	//Updates an existing insurance create data
-	@PutMapping("/updateinsurance/{token}")
-	public ResponseEntity<Response> updateInsurance(@PathVariable String token,
+	@PutMapping("/updateinsurance/{access}")
+	public ResponseEntity<Response> updateInsurance(@RequestParam String token,
 												  	@Valid @RequestBody InsuranceCreateDTO insuranceDTO,
-												  	@RequestParam boolean claimed) {
+												  	@RequestParam boolean claimed,
+												  	@PathVariable String access) {
 		log.info("Update Insurance Create Data: " + insuranceDTO);
-		Response response  = insuranceservice.updateInsurance(token, insuranceDTO, claimed);
+		Response response  = insuranceservice.updateInsurance(token, insuranceDTO, claimed, access);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
 	//Deletes an existing insurance create data
-	@DeleteMapping("/deleteinsurance")
-	public ResponseEntity<Response> deleteInsurance(@RequestParam String token) {
+	@DeleteMapping("/deleteinsurance/{access}")
+	public ResponseEntity<Response> deleteInsurance(@RequestParam String token,
+													@PathVariable String access) {
 		log.info("Insurance Create Data Deleted");
-		Response response  = insuranceservice.deleteInsurance(token);
+		Response response  = insuranceservice.deleteInsurance(token,access);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 }

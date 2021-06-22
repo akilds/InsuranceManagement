@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.insurance.model.InsuranceCategoryData;
-import com.insurance.model.UserData;
+import com.insurance.model.UserRegistrationData;
 import com.insurance.service.IInsuranceCategoryService;
 import com.insurance.service.IInsuranceCreateService;
 import com.insurance.service.IUserService;
@@ -34,72 +34,80 @@ public class AdminController {
 	private IInsuranceCreateService insurancecreateservice;
 	
 	//Returns all the user data present
-	@GetMapping("/getallusers/{token}")
-	public ResponseEntity<List<?>> getAllUsers(@PathVariable String token) {
+	@GetMapping("/getallusers/{access}")
+	public ResponseEntity<List<?>> getAllUsers(@RequestParam String token,
+												@PathVariable String access) {
 		log.info("Get All User Data");
-		List<UserData> response = userservice.getAllUsers(token);
+		List<UserRegistrationData> response = userservice.getAllUsers(token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Returns all the insurance data present
-	@GetMapping("/getallcateogoryinsurance/{token}")
-	public ResponseEntity<List<?>> getAllCategoryInsurance(@PathVariable String token) {
+	@GetMapping("/getallcateogoryinsurance/{access}")
+	public ResponseEntity<List<?>> getAllCategoryInsurance(@RequestParam String token,
+															@PathVariable String access) {
 		log.info("Get All Insurance Data");
-		List<InsuranceCategoryData> response = insuranceservice.getAllInsurance(token);
+		List<InsuranceCategoryData> response = insuranceservice.getAllInsurance(token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Returns all the data present
-	@GetMapping("/getallcreatedinsurance/{token}")
-	public ResponseEntity<List<?>> getAllCreatedInsurance(@PathVariable String token) {
+	@GetMapping("/getallcreatedinsurance/{access}")
+	public ResponseEntity<List<?>> getAllCreatedInsurance(@RequestParam String token,
+															@PathVariable String access) {
 		log.info("Get All Insurance Create Data");
-		List<?> response = insurancecreateservice.getAllInsurance(token);
+		List<?> response = insurancecreateservice.getAllInsurance(token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Returns all the user data registered between dates
-	@GetMapping("/getalluserbetweendates/{token}")
-	public ResponseEntity<List<?>> getAllUserBetweenRegisteredData(@PathVariable String token,
+	@GetMapping("/getalluserbetweendates/{access}")
+	public ResponseEntity<List<?>> getAllUserBetweenRegisteredData(@RequestParam String token,
 																   @RequestParam String date1,
-																   @RequestParam String date2) {
+																   @RequestParam String date2,
+																   @PathVariable String access) {
 		log.info("Get All User Data Registered Between Dates");
-		List<UserData> response = userservice.getAllUserBetweenRegisteredDate(token,date1,date2);
+		List<UserRegistrationData> response = userservice.getAllUserBetweenRegisteredDate(token,date1,date2,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 
 	//Returns all the user data based on health condition
-	@GetMapping("/getalluserwithhealthcondition/{token}")
-	public ResponseEntity<List<?>> getAllUserWithHealthCondition(@PathVariable String token,
-																 @RequestParam String healthCondition) {
+	@GetMapping("/getalluserwithhealthcondition/{access}")
+	public ResponseEntity<List<?>> getAllUserWithHealthCondition(@RequestParam String token,
+																 @RequestParam String healthCondition,
+																 @PathVariable String access) {
 		log.info("Get All User Data Based On Health Condition");
-		List<UserData> response = userservice.getAllUserWithHealthCondition(token, healthCondition);
+		List<UserRegistrationData> response = userservice.getAllUserWithHealthCondition(token, healthCondition, access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 		
 	//Returns all the user data based on vehicle data
-	@GetMapping("/getalluserwithvehicledata/{token}")
-	public ResponseEntity<List<?>> getAllUserWithVehicleData(@PathVariable String token,
-															 @RequestParam String vehicleData) {
+	@GetMapping("/getalluserwithvehicledata/{access}")
+	public ResponseEntity<List<?>> getAllUserWithVehicleData(@RequestParam String token,
+															 @RequestParam String vehicleData,
+															 @PathVariable String access) {
 		log.info("Get All User Data Based On Vehicle Data");
-		List<UserData> response = userservice.getAllUserWithVehicleData(token, vehicleData);
+		List<UserRegistrationData> response = userservice.getAllUserWithVehicleData(token, vehicleData, access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Returns all the insurance data based on id
-	@GetMapping("/getallinsurancewithid/{token}")
-	public ResponseEntity<List<?>> getAllInsuranceWithParticularCategory(@PathVariable String token) {
+	@GetMapping("/getallinsurancewithid/{access}")
+	public ResponseEntity<List<?>> getAllInsuranceWithParticularCategory(@RequestParam String token,
+																		@PathVariable String access) {
 		log.info("Get All Insurance Data Based On Id");
-		List<InsuranceCategoryData> response = insuranceservice.getAllInsuranceWithParticularCategory(token);
+		List<InsuranceCategoryData> response = insuranceservice.getAllInsuranceWithParticularCategory(token, access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 		
 	//Returns all the insurance data between dates
-	@GetMapping("/getallinsurancebetweendates/{token}")
-	public ResponseEntity<List<?>> getAllInsuranceBetweenDates(@PathVariable String token,
+	@GetMapping("/getallinsurancebetweendates/{access}")
+	public ResponseEntity<List<?>> getAllInsuranceBetweenDates(@RequestParam String token,
 															   @RequestParam String date1,
-															   @RequestParam String date2) {
+															   @RequestParam String date2,
+															   @PathVariable String access) {
 		log.info("Get All Insurance Data Between Dates");
-		List<InsuranceCategoryData> response = insuranceservice.getAllInsuranceBetweenDates(token,date1,date2);
+		List<InsuranceCategoryData> response = insuranceservice.getAllInsuranceBetweenDates(token,date1,date2,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 }

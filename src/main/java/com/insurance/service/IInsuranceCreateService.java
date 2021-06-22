@@ -7,19 +7,19 @@ import com.insurance.util.Response;
 
 public interface IInsuranceCreateService {
 
-	Response addInsurance(InsuranceCreateDTO insuranceDTO);
+	Response addInsurance(InsuranceCreateDTO insuranceDTO, String access);
 
-	Response updateInsurance(String token, InsuranceCreateDTO insuranceDTO, boolean claimed);
+	Response updateInsurance(String token, InsuranceCreateDTO insuranceDTO, boolean claimed, String access);
 
-	List<?> getAllInsurance(String token);
+	List<?> getAllInsurance(String token, String access);
 
-	Response deleteInsurance(String token);
+	Response deleteInsurance(String token, String access);
 	
-	List<?> getAllByStatus(String status, String token);
+	List<?> getAllByStatus(String status, String token, String access);
 	
-	List<?> getAllByMonthPeriod(int monthPeriod, String token);
+	List<?> getAllByMonthPeriod(int monthPeriod, String token, String access);
 	
-	List<?> getAllInsuranceForUser(String fullName, String token);
+	List<?> getAllInsuranceForUser(String fullName, String token, String access);
 
-	List<?> getAllClaimedInsurance(String token);
+	List<?> getAllClaimedInsurance(String token, String access);
 }

@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.insurance.dto.UserDTO;
-import com.insurance.model.UserData;
+import com.insurance.model.UserRegistrationData;
 import com.insurance.service.IUserService;
 import com.insurance.util.Response;
 
@@ -30,38 +31,62 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	@Autowired
-	private IUserService userservice;
+	private IUserService userService;
 	
 	//Returns all the user data present
-	@GetMapping("/getallusers/{token}")
-	public ResponseEntity<List<?>> getAllUsers(@PathVariable String token) {
+	@GetMapping("/getallusers/{access}")
+	public ResponseEntity<List<?>> getAllUsers(@RequestHeader String token,
+											   @PathVariable String access) {
 		log.info("Get All User Data");
-		List<UserData> response = userservice.getAllUsers(token);
+		List<UserRegistrationData> response = userService.getAllUsers(token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Creates a new user data 
-	@PostMapping("/addnewuser")
-	public ResponseEntity<Response> createUser(@Valid @RequestBody UserDTO userDTO) {
+	@PostMapping("/addnewuser/{access}")
+	public ResponseEntity<Response> createUser(@Valid @RequestBody UserDTO userDTO,
+												@PathVariable String access) {
 		log.info("Create User Data : " + userDTO);
-		Response response  = userservice.addUser(userDTO);
+		Response response  = userService.addUser(userDTO,access);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
+	//User Login
+	@PutMapping("/login")
+	public ResponseEntity<Response> userLogin(@RequestHeader String token,
+											  @RequestParam String emailId,
+											  @RequestParam String password) {
+		log.info("User Login");
+		Response response  = userService.userLogin(token,emailId,password);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
+		
+	//Changes the forget password
+	@PutMapping("/forgetpassword")
+	public ResponseEntity<Response> forgetPassword(@RequestHeader String token,
+											  	   @RequestParam String emailId,
+											  	   @RequestParam String password) {
+		log.info("Forgot Password");
+		Response response  = userService.forgetPassword(token,emailId,password);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
+		
 	//Updates an existing user data
-	@PutMapping("/updateuser/{token}")
-	public ResponseEntity<Response> updateUser(@PathVariable String token,
-												  @Valid @RequestBody UserDTO userDTO) {
+	@PutMapping("/updateuser/{access}")
+	public ResponseEntity<Response> updateUser(@RequestHeader String token,
+											   @Valid @RequestBody UserDTO userDTO,
+											   @PathVariable String access) {
 		log.info("Update User Data : " + userDTO);
-		Response response  = userservice.updateUser(token, userDTO);
+		Response response  = userService.updateUser(token, userDTO, access);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
 	//Deletes an existing user data
-	@DeleteMapping("/deleteuser")
-	public ResponseEntity<Response> deleteUser(@RequestParam String token) {
+	@DeleteMapping("/deleteuser/{access}")
+	public ResponseEntity<Response> deleteUser(@RequestHeader String token,
+												@PathVariable String access) {
 		log.info("User Data Deleted");
-		Response response  = userservice.deleteUser(token);
+		Response response  = userService.deleteUser(token, access);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 }

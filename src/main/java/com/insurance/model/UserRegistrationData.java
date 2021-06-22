@@ -16,7 +16,7 @@ import lombok.Data;
 
 @Entity
 @Table(name = "user_data")
-public @Data class UserData {
+public @Data class UserRegistrationData {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,6 +27,8 @@ public @Data class UserData {
 	private String fullName;
 	private String mobileNo;
 	private int age;
+	private String emailId;
+	private String password;
 	private String occupation;
 	private String familyBackground;
 	private File KYC;
@@ -36,30 +38,13 @@ public @Data class UserData {
 	private LocalDateTime userUpdatedDate = LocalDateTime.now();
 	private String permenantAddress;
 	private String tempAddress;
+	private String userAccess;
 	
-	public UserData() {}
+	public UserRegistrationData() {}
 
-	public UserData(int id) {
+	public UserRegistrationData(int id) {
 		super();
 		this.userId = id;
-	}
-	public UserData(int id, String fullName, String mobileNo, int age, String occupation, String familyBackground,
-			File kYC, String healthCondition, String vehicleData, LocalDateTime registeredDate,
-			LocalDateTime updatedDate, String tempAddress, String permenantAddress) {
-		super();
-		this.userId = id;
-		this.fullName = fullName;
-		this.mobileNo = mobileNo;
-		this.age = age;
-		this.occupation = occupation;
-		this.familyBackground = familyBackground;
-		this.KYC = kYC;
-		this.healthCondition = healthCondition;
-		this.vehicleData = vehicleData;
-		this.userRegisteredDate = registeredDate;
-		this.userUpdatedDate = updatedDate;
-		this.tempAddress = tempAddress;
-		this.permenantAddress = permenantAddress;
 	}
 
 	public void updateUser(UserDTO userDTO) {
@@ -74,5 +59,6 @@ public @Data class UserData {
 		this.userUpdatedDate = LocalDateTime.now();
 		this.tempAddress = userDTO.tempAddress;
 		this.permenantAddress = userDTO.permenantAddress;
+		this.userAccess = userDTO.userAccess;
 	}
 }

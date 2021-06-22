@@ -32,7 +32,7 @@ public @Data class InsuranceCreateData {
 
 	@ManyToOne
 	@JoinColumn(name = "user_cid", referencedColumnName = "user_id")
-	private UserData userCid;
+	private UserRegistrationData userCid;
 	
 	@ManyToOne
 	@JoinColumn(name = "insurance_cid", referencedColumnName = "insurance_id")
@@ -40,7 +40,7 @@ public @Data class InsuranceCreateData {
 	
 	public InsuranceCreateData() {}
 
-	public InsuranceCreateData(int id, UserData userId, InsuranceCategoryData insuranceId, int monthPeriod, String status,
+	public InsuranceCreateData(int id, UserRegistrationData userId, InsuranceCategoryData insuranceId, int monthPeriod, String status,
 			LocalDateTime createRegisteredDate, LocalDateTime createUpdatedDate) {
 		super();
 		this.id = id;

@@ -34,36 +34,39 @@ public class InsuranceCategoryController {
 	private IInsuranceCategoryService insuranceservice;
 	
 	//Returns all the insurance data present
-	@GetMapping("/getallinsurance/{token}")
-	public ResponseEntity<List<?>> getAllInsurance(@PathVariable String token) {
+	@GetMapping("/getallinsurance/{access}")
+	public ResponseEntity<List<?>> getAllInsurance(@RequestParam String token,
+													@PathVariable String access) {
 		log.info("Get All Insurance Data");
-		List<InsuranceCategoryData> response = insuranceservice.getAllInsurance(token);
+		List<InsuranceCategoryData> response = insuranceservice.getAllInsurance(token,access);
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
 	//Creates a new insurance data
-	@PostMapping("/addnewinsurance")
-	public ResponseEntity<Response> createInsurance(@Valid @RequestBody InsuranceDTO insuranceDTO) {
+	@PostMapping("/addnewinsurance/{access}")
+	public ResponseEntity<Response> createInsurance(@Valid @RequestBody InsuranceDTO insuranceDTO,
+													@PathVariable String access) {
 		log.info("Create Insurance : " + insuranceDTO);
-		Response response  = insuranceservice.addInsurance(insuranceDTO);
+		Response response  = insuranceservice.addInsurance(insuranceDTO, access);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
 	//Updates an existing insurance data
-	@PutMapping("/updateinsurance/{token}")
-	public ResponseEntity<Response> updateInsurance(@PathVariable String token,
-												  @Valid @RequestBody InsuranceDTO insuranceDTO) {
+	@PutMapping("/updateinsurance/{access}")
+	public ResponseEntity<Response> updateInsurance(@RequestParam String token,
+												  @Valid @RequestBody InsuranceDTO insuranceDTO,
+												  @PathVariable String access) {
 		log.info("Update User : " + insuranceDTO);
-		Response response  = insuranceservice.updateInsurance(token, insuranceDTO);
-		return new ResponseEntity<Response>(response, HttpStatus
-				.OK);
+		Response response  = insuranceservice.updateInsurance(token, insuranceDTO, access);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
 	//Deletes an existing insurance data
-	@DeleteMapping("/deleteinsurance")
-	public ResponseEntity<Response> deleteInsurance(@RequestParam String token) {
+	@DeleteMapping("/deleteinsurance/{access}")
+	public ResponseEntity<Response> deleteInsurance(@RequestParam String token,
+													@PathVariable String access) {
 		log.info("Deleted Insurance Data");
-		Response response  = insuranceservice.deleteInsurance(token);
+		Response response  = insuranceservice.deleteInsurance(token, access);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 }

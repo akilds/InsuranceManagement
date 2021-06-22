@@ -23,6 +23,12 @@ public @ToString class UserDTO {
 	@NotEmpty(message = "Mobile Number cannot be Empty")
 	public String mobileNo;
 	
+	@NotNull(message = "EmailId cannot be Empty")
+	public String emailId;
+	
+	@NotNull(message = "Password cannot be Empty")
+	public String password;
+	
 	@NotNull(message = "Age cannot be Empty")
 	public int age;
 	
@@ -39,4 +45,7 @@ public @ToString class UserDTO {
 	
 	@NotEmpty(message = "Vehicle Data cannot be Empty")
 	public String vehicleData;
+	
+	@NotEmpty(message = "User Access cannot be Empty")
+	public String userAccess;
 }
