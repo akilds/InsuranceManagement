@@ -28,18 +28,27 @@ public class InsuranceCreateService implements IInsuranceCreateService{
 	
 	@Autowired
 	private TokenUtil tokenUtil;
+	
+	private enum ACCESS{
+		handler;
+	}
 
 	//Returns all the insurance create data present
 	@Override
 	public List<?> getAllInsurance(String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCreateData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("handler")) {
-			log.info("Get All Data");
-			return insuranceRepository.findAllData();
+		if(access.equals(ACCESS.handler.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Get All Data");
+				return insuranceRepository.findAllData();
+			}else {
+				log.error("Insurance Create Token Is Not Valid");
+				throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid");
+			}
 		}else {
-			log.error("Insurance Create Token Is Not Valid/Not Authorised");
-			throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 
@@ -48,12 +57,17 @@ public class InsuranceCreateService implements IInsuranceCreateService{
 	public List<?> getAllByStatus(String status, String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCreateData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("handler")) {
-			log.info("Get All Data Based On Status");
-			return insuranceRepository.findAllByStatus(status);
+		if(access.equals(ACCESS.handler.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Get All Data Based On Status");
+				return insuranceRepository.findAllByStatus(status);
+			}else {
+				log.error("Insurance Create Token Is Not Valid");
+				throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid");
+			}
 		}else {
-			log.error("Insurance Create Token Is Not Valid/Not Authorised");
-			throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 
@@ -62,12 +76,17 @@ public class InsuranceCreateService implements IInsuranceCreateService{
 	public List<?> getAllByMonthPeriod(int monthPeriod, String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCreateData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("handler")) {
-			log.info("Get All Data Based On Month Period");
-			return insuranceRepository.findAllByMonthPeriod(monthPeriod);
+		if(access.equals(ACCESS.handler.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Get All Data Based On Month Period");
+				return insuranceRepository.findAllByMonthPeriod(monthPeriod);
+			}else {
+				log.error("Insurance Create Token Is Not Valid");
+				throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid");
+			}	
 		}else {
-			log.error("Insurance Create Token Is Not Valid/Not Authorised");
-			throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 	
@@ -76,12 +95,17 @@ public class InsuranceCreateService implements IInsuranceCreateService{
 	public List<?> getAllInsuranceForUser(String fullName, String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCreateData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("handler")) {
-			log.info("Get All Data Based On Full Name");
-			return insuranceRepository.findAllInsuranceForUser(fullName);
+		if(access.equals(ACCESS.handler.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Get All Data Based On Full Name");
+				return insuranceRepository.findAllInsuranceForUser(fullName);
+			}else {
+				log.error("Insurance Create Token Is Not Valid");
+				throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid");
+			}
 		}else {
-			log.error("Insurance Create Token Is Not Valid/Not Authorised");
-			throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 	
@@ -90,19 +114,24 @@ public class InsuranceCreateService implements IInsuranceCreateService{
 	public List<?> getAllClaimedInsurance(String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCreateData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("handler")) {
-			log.info("Get All Claimed Insurance Data");
-			return insuranceRepository.findAllClaimedInsuranceData(true);
+		if(access.equals(ACCESS.handler.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Get All Claimed Insurance Data");
+				return insuranceRepository.findAllClaimedInsuranceData(true);
+			}else {
+				log.error("Insurance Create Token Is Not Valid");
+				throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid");
+			}
 		}else {
-			log.error("Insurance Create Token Is Not Valid/Not Authorised");
-			throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 	
 	//Adds new insurance create data
 	@Override
 	public Response addInsurance(InsuranceCreateDTO insuranceDTO, String access) {
-		if(access.equals("handler")) {
+		if(access.equals(ACCESS.handler.name())) {
 			log.info("Added Insurance Create Data : " + insuranceDTO);
 			InsuranceCreateData user = modelmapper.map(insuranceDTO, InsuranceCreateData.class);
 			insuranceRepository.save(user);
@@ -119,14 +148,19 @@ public class InsuranceCreateService implements IInsuranceCreateService{
 	public Response updateInsurance(String token, InsuranceCreateDTO insuranceDTO, boolean claimed, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCreateData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("handler")) {
-			log.info("Updated Insurance Create Data : " + insuranceDTO);
-			isPresent.get().updateInsurance(insuranceDTO,claimed);
-			insuranceRepository.save(isPresent.get());
-			return new Response(200, "Insurance Create Data Updated Successfully", token);
+		if(access.equals(ACCESS.handler.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Updated Insurance Create Data : " + insuranceDTO);
+				isPresent.get().updateInsurance(insuranceDTO,claimed);
+				insuranceRepository.save(isPresent.get());
+				return new Response(200, "Insurance Create Data Updated Successfully", token);
+			}else {
+				log.error("Insurance Create Data Doesnt Exist");
+				throw new UserInsuranceException(400, "Insurance Create Data Doesnt Exist");
+			}	
 		}else {
-			log.error("Insurance Create Data Doesnt Exist/Not Authorised");
-			throw new UserInsuranceException(400, "Insurance Create Data Doesnt Exist/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 
@@ -135,13 +169,18 @@ public class InsuranceCreateService implements IInsuranceCreateService{
 	public Response deleteInsurance(String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<InsuranceCreateData> isPresent = insuranceRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("handler")) {
-			log.info("Insurance Create Data Deleted");
-			insuranceRepository.delete(isPresent.get());
-			return new Response(200, "Insurance Create Data Deleted Successfully", token);
+		if(access.equals(ACCESS.handler.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Insurance Create Data Deleted");
+				insuranceRepository.delete(isPresent.get());
+				return new Response(200, "Insurance Create Data Deleted Successfully", token);
+			}else {
+				log.error("Insurance Create Token Is Not Valid");
+				throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid");
+			}
 		}else {
-			log.error("Insurance Create Token Is Not Valid/Not Authorised");
-			throw new UserInsuranceException(400, "Insurance Create Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}
 	}
 }

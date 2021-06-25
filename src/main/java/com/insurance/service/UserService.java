@@ -30,19 +30,28 @@ public class UserService implements IUserService{
 	
 	@Autowired
 	private TokenUtil tokenUtil;
+	
+	private enum ACCESS{
+		admin, user;
+	}
 
 	//Returns all user data present
 	@Override
 	public List<UserRegistrationData> getAllUsers(String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<UserRegistrationData> isPresent = userRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("admin")) {
-			log.info("Get All User Data");
-			List<UserRegistrationData> getAllUsers = userRepository.findAll();
-			return getAllUsers;
+		if(access.equals(ACCESS.admin.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Get All User Data");
+				List<UserRegistrationData> getAllUsers = userRepository.findAll();
+				return getAllUsers;
+			}else {
+				log.error("User Token Is Not valid");
+				throw new UserInsuranceException(400, "User Token Is Not Valid");
+			}
 		}else {
-			log.error("User Token Is Not valid/Not Authorised");
-			throw new UserInsuranceException(400, "User Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 
@@ -52,16 +61,21 @@ public class UserService implements IUserService{
 														  String date2, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<UserRegistrationData> isPresent = userRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("admin")) {
-			log.info("Get All User Data Between Dates");
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); 
-			LocalDateTime start = LocalDateTime.parse(date1, formatter);
-			LocalDateTime end = LocalDateTime.parse(date2, formatter);
-			List<UserRegistrationData> getAllUsers = userRepository.findAllUserBetweenDates(start,end);
-			return getAllUsers;
+		if(access.equals(ACCESS.admin.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Get All User Data Between Dates");
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); 
+				LocalDateTime start = LocalDateTime.parse(date1, formatter);
+				LocalDateTime end = LocalDateTime.parse(date2, formatter);
+				List<UserRegistrationData> getAllUsers = userRepository.findAllUserBetweenDates(start,end);
+				return getAllUsers;
+			}else {
+				log.error("User Token Is Not valid");
+				throw new UserInsuranceException(400, "User Token Is Not Valid");
+			}
 		}else {
-			log.error("User Token Is Not valid/Not Authorised");
-			throw new UserInsuranceException(400, "User Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 	
@@ -70,13 +84,18 @@ public class UserService implements IUserService{
 	public List<UserRegistrationData> getAllUserWithHealthCondition(String token, String healthCondition, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<UserRegistrationData> isPresent = userRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("admin")) {
-			log.info("Get All User DataWith Health Condition");
-			List<UserRegistrationData> getAllUsers = userRepository.findAllByHealthCondition(healthCondition);
-			return getAllUsers;
+		if(access.equals(ACCESS.admin.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Get All User DataWith Health Condition");
+				List<UserRegistrationData> getAllUsers = userRepository.findAllByHealthCondition(healthCondition);
+				return getAllUsers;
+			}else {
+				log.error("User Token Is Not valid");
+				throw new UserInsuranceException(400, "User Token Is Not Valid");
+			}
 		}else {
-			log.error("User Token Is Not valid/Not Authorised");
-			throw new UserInsuranceException(400, "User Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 	
@@ -85,13 +104,18 @@ public class UserService implements IUserService{
 	public List<UserRegistrationData> getAllUserWithVehicleData(String token, String vehicleData, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<UserRegistrationData> isPresent = userRepository.findById(id);
-		if(isPresent.isPresent() && access.equals("admin")) {
-			log.info("Get All User Data Based On Vehicle Data");
-			List<UserRegistrationData> getAllUsers = userRepository.findAllByVehicleData(vehicleData);
-			return getAllUsers;
+		if(access.equals(ACCESS.admin.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Get All User Data Based On Vehicle Data");
+				List<UserRegistrationData> getAllUsers = userRepository.findAllByVehicleData(vehicleData);
+				return getAllUsers;
+			}else {
+				log.error("User Token Is Not valid");
+				throw new UserInsuranceException(400, "User Token Is Not Valid");
+			}
 		}else {
-			log.error("User Token Is Not valid/Not Authorised");
-			throw new UserInsuranceException(400, "User Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 		
@@ -99,15 +123,20 @@ public class UserService implements IUserService{
 	@Override
 	public Response addUser(UserDTO userDTO, String access) {
 		Optional<UserRegistrationData> isPresent = userRepository.findByMobileNo(userDTO.getMobileNo());
-		if(isPresent.isPresent() && !access.equals("admin")) {
-			log.error("User Already Added/Not Authorised");
-			throw new UserInsuranceException(400, "User Already Added/Not Authorised");
+		if(access.equals(ACCESS.admin.name())) {
+			if(isPresent.isPresent()) {
+				log.error("User Already Added");
+				throw new UserInsuranceException(400, "User Already Added");
+			}else {
+				log.info("Add User : " + userDTO);
+				UserRegistrationData user = modelmapper.map(userDTO, UserRegistrationData.class);
+				userRepository.save(user);
+				String token = tokenUtil.createToken(user.getUserId());
+				return new Response(200, "User Data Added Successfully", token);
+			}	
 		}else {
-			log.info("Add User : " + userDTO);
-			UserRegistrationData user = modelmapper.map(userDTO, UserRegistrationData.class);
-			userRepository.save(user);
-			String token = tokenUtil.createToken(user.getUserId());
-			return new Response(200, "User Data Added Successfully", token);
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 
@@ -117,14 +146,19 @@ public class UserService implements IUserService{
 		
 		int id = tokenUtil.decodeToken(token);
 		Optional<UserRegistrationData> isPresent = userRepository.findById(id);
-		if(isPresent.isPresent()&&access.equals("user")) {
-			log.info("Update User : " + userDTO);
-			isPresent.get().updateUser(userDTO);
-			userRepository.save(isPresent.get());
-			return new Response(200, "User Data Updated Successfully", token);
+		if(access.equals(ACCESS.user.name())) {
+			if(isPresent.isPresent()) {
+				log.info("Update User : " + userDTO);
+				isPresent.get().updateUser(userDTO);
+				userRepository.save(isPresent.get());
+				return new Response(200, "User Data Updated Successfully", token);
+			}else {
+				log.error("User Doesnt Exist");
+				throw new UserInsuranceException(400, "User Doesnt Exist");
+			}
 		}else {
-			log.error("User Doesnt Exist/Not Authorised");
-			throw new UserInsuranceException(400, "User Doesnt Exist/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}	
 	}
 
@@ -171,13 +205,18 @@ public class UserService implements IUserService{
 	public Response deleteUser(String token, String access) {
 		int id = tokenUtil.decodeToken(token);
 		Optional<UserRegistrationData> isPresent = userRepository.findById(id);
-		if(isPresent.isPresent()&&access.equals("user")) {
-			log.info("User Data Deleted");
-			userRepository.delete(isPresent.get());
-			return new Response(200, "User Data Deleted Successfully", token);
+		if(access.equals(ACCESS.user.name())) {
+			if(isPresent.isPresent()) {
+				log.info("User Data Deleted");
+				userRepository.delete(isPresent.get());
+				return new Response(200, "User Data Deleted Successfully", token);
+			}else {
+				log.error("User Token Is Not Valid");
+				throw new UserInsuranceException(400, "User Token Is Not Valid");
+			}
 		}else {
-			log.error("User Token Is Not Valid/Not Authorised");
-			throw new UserInsuranceException(400, "User Token Is Not Valid/Not Authorised");
+			log.error("Not Authorised");
+			throw new UserInsuranceException(400, "Not Authorised");
 		}
 	}
 }
